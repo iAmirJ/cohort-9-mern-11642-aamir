@@ -11,13 +11,22 @@ CREATE EXTENSION IF NOT EXISTS citext;     -- case-insensitive email
 -- ---------------------------------------------------------------------------
 -- Enums
 -- ---------------------------------------------------------------------------
-CREATE TYPE user_status AS ENUM ('active', 'deactivated');
-CREATE TYPE verification_token_type AS ENUM ('email_verification', 'password_reset');
+DO $$ BEGIN
+    CREATE TYPE user_status AS ENUM ('active', 'deactivated');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE verification_token_type AS ENUM ('email_verification', 'password_reset');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 -- ---------------------------------------------------------------------------
 -- users
 -- ---------------------------------------------------------------------------
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name               VARCHAR(255) NOT NULL,
     email              CITEXT NOT NULL UNIQUE,
@@ -33,7 +42,7 @@ CREATE TABLE users (
 -- ---------------------------------------------------------------------------
 -- notes
 -- ---------------------------------------------------------------------------
-CREATE TABLE notes (
+CREATE TABLE IF NOT EXISTS notes (
     id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title          VARCHAR(255) NOT NULL DEFAULT '',
@@ -51,7 +60,7 @@ CREATE TABLE notes (
 -- ---------------------------------------------------------------------------
 -- refresh_tokens  (makes "log out" a real, revocable server-side action)
 -- ---------------------------------------------------------------------------
-CREATE TABLE refresh_tokens (
+CREATE TABLE IF NOT EXISTS refresh_tokens (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash  TEXT NOT NULL UNIQUE,     -- store a hash, never the raw token
@@ -65,7 +74,7 @@ CREATE TABLE refresh_tokens (
 -- ---------------------------------------------------------------------------
 -- verification_tokens  (email verification + password reset, gap-driven — see doc §10)
 -- ---------------------------------------------------------------------------
-CREATE TABLE verification_tokens (
+CREATE TABLE IF NOT EXISTS verification_tokens (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id      UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     token_hash   TEXT NOT NULL UNIQUE,
@@ -86,10 +95,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trg_users_updated_at ON users;
 CREATE TRIGGER trg_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
+DROP TRIGGER IF EXISTS trg_notes_updated_at ON notes;
 CREATE TRIGGER trg_notes_updated_at
     BEFORE UPDATE ON notes
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -99,25 +110,25 @@ CREATE TRIGGER trg_notes_updated_at
 -- ---------------------------------------------------------------------------
 
 -- Dashboard's core query: "this user's active notes, newest first"
-CREATE INDEX idx_notes_user_created
+CREATE INDEX IF NOT EXISTS idx_notes_user_created
     ON notes (user_id, created_at DESC, id)
     WHERE deleted_at IS NULL;
 
 -- Full-text search / filter
-CREATE INDEX idx_notes_search
+CREATE INDEX IF NOT EXISTS idx_notes_search
     ON notes USING GIN (search_vector);
 
 -- Cheap scan target for the soft-delete retention/purge job
-CREATE INDEX idx_notes_deleted_at
+CREATE INDEX IF NOT EXISTS idx_notes_deleted_at
     ON notes (deleted_at)
     WHERE deleted_at IS NOT NULL;
 
 -- Active-session lookups (logout / "log out everywhere")
-CREATE INDEX idx_refresh_tokens_user_active
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_active
     ON refresh_tokens (user_id)
     WHERE revoked_at IS NULL;
 
 -- Pending verification/reset link lookups
-CREATE INDEX idx_verification_tokens_user_type
+CREATE INDEX IF NOT EXISTS idx_verification_tokens_user_type
     ON verification_tokens (user_id, type)
     WHERE consumed_at IS NULL;

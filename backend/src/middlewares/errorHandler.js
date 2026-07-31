@@ -5,7 +5,8 @@ function errorHandler(err, req, res, next) {
   const message = err.isOperational ? err.message : 'Internal server error';
   const details = err.isOperational ? err.details : undefined;
 
-  logger.error({ err }, message);
+  const logMethod = statusCode >= 500 ? 'error' : 'warn';
+  logger[logMethod]({ err }, message);
 
   res.status(statusCode).json({
     success: false,
