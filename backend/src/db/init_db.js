@@ -17,8 +17,16 @@ const initializeDB = async () => {
     console.error('❌ Error executing SQL file:', err);
     process.exitCode = 1;
   } finally {
-    await pool.end();
+    try {
+      await pool.end();
+    } catch (cleanupErr) {
+      console.error('❌ Error during pool cleanup:', cleanupErr);
+      process.exitCode = 1;
+    }
   }
 };
 
-initializeDB();
+initializeDB().catch((err) => {
+  console.error('❌ Unhandled initialization error:', err);
+  process.exitCode = 1;
+});

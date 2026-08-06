@@ -23,6 +23,8 @@
     "pino": "^10.3.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
     "@types/node": "^26.1.2",
     "@types/pg": "^8.20.1",
     "express-rate-limit": "^8.6.1",
