@@ -1,4 +1,3 @@
-// @ts-check
 const pino = require('pino');
 
 /** @type {import('pino').Logger} */

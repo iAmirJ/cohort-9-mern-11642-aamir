@@ -1,4 +1,3 @@
-// @ts-check
 const { Pool } = require('pg');
 require('dotenv').config();
 
