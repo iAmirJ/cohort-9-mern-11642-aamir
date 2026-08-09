@@ -5,9 +5,9 @@ require('dotenv').config();
 /** @type {import('pg').Pool} */
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // Close idle clients after 30 seconds
-  connectionTimeoutMillis: 2000, // Timeout after 2 seconds if connection fails
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
 });
 
 pool.on('connect', () => {
