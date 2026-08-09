@@ -1,6 +1,8 @@
+/** @type {import('express')} */
 const express = require('express');
 const authRoutes = require('./routes/auth.routes');
 const errorHandler = require('./middlewares/errorHandler');
+/** @type {import('cookie-parser')} */
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -22,7 +24,7 @@ if (process.env.NODE_ENV === 'production') {
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: 100,
 });
 app.use('/api/auth', authLimiter, authRoutes);
 
