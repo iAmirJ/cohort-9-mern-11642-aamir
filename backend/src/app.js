@@ -6,6 +6,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const noteRoutes = require('./routes/note.routes');
 
 /** @type {import('express').Express} */
 const app = express();
@@ -27,6 +28,12 @@ const authLimiter = rateLimit({
   max: 100,
 });
 app.use('/api/auth', authLimiter, authRoutes);
+
+const notesLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+});
+app.use('/api/notes', notesLimiter, noteRoutes);
 
 app.use(errorHandler);
 
