@@ -2,6 +2,7 @@ const noteRepository = require('../repositories/note.repository');
 const { extractPlainText } = require('../utils/richText');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
+const socket = require('../sockets/socket');
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
@@ -19,6 +20,7 @@ async function createNote({ userId, title, content }) {
   });
 
   logger.info({ userId, noteId: note.id }, 'Note created');
+  socket.broadcastToUser(userId, 'note:created', note);
   return note;
 }
 
@@ -69,6 +71,7 @@ async function updateNote({ userId, noteId, title, content }) {
   const updated = await noteRepository.update(noteId, userId, fields);
 
   logger.info({ userId, noteId }, 'Note updated');
+  socket.broadcastToUser(userId, 'note:updated', updated);
   return updated;
 }
 
@@ -79,6 +82,7 @@ async function deleteNote({ userId, noteId }) {
   }
 
   logger.info({ userId, noteId }, 'Note deleted');
+  socket.broadcastToUser(userId, 'note:deleted', { id: noteId });
 }
 
 module.exports = { createNote, listNotes, getNoteById, updateNote, deleteNote };
