@@ -1,4 +1,4 @@
-const { verifyAccessToken } = require('../utils/jwt');
+const jwtUtils = require('../utils/jwt');
 const ApiError = require('../utils/ApiError');
 
 function authenticate(req, res, next) {
@@ -11,7 +11,7 @@ function authenticate(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   try {
-    const payload = verifyAccessToken(token);
+    const payload = jwtUtils.verifyAccessToken(token);
     req.user = { id: payload.sub };
     next();
   } catch (err) {
