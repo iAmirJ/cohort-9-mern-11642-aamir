@@ -30,6 +30,7 @@ function initSocket(httpServer) {
       socket.userId = payload.sub;
       next();
     } catch (err) {
+      logger.error(err);
       next(new Error('Invalid or expired token'));
     }
   });

@@ -10,7 +10,7 @@ const REFRESH_COOKIE_BASE_OPTIONS = {
 };
 
 function refreshCookieMaxAge() {
-  return (parseInt(process.env.REFRESH_TOKEN_EXPIRES_DAYS, 10) || 30) * 24 * 60 * 60 * 1000;
+  return (Number.parseInt(process.env.REFRESH_TOKEN_EXPIRES_DAYS, 10) || 30) * 24 * 60 * 60 * 1000;
 }
 
 const register = asyncHandler(async (req, res) => {

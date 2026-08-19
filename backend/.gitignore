@@ -17,3 +17,8 @@ Thumbs.db
 *.swp
 
 .nyc_output/
+
+# SonarQube & Coverage
+.scannerwork/
+coverage/
+sonar-project.properties

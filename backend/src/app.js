@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(pinoHttp({ logger }));
 
 if (process.env.NODE_ENV === 'production') {
-  const isMultiProcess = process.env.NODE_APP_INSTANCE || require('cluster').isWorker;
+  const isMultiProcess = process.env.NODE_APP_INSTANCE || require('node:cluster').isWorker;
   if (isMultiProcess) {
     throw new Error('A shared rate-limit store must be configured for multi-instance deployments.');
   }

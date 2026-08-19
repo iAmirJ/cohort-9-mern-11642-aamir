@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 

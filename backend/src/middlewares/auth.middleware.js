@@ -4,7 +4,7 @@ const ApiError = require('../utils/ApiError');
 function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader?.startsWith('Bearer ')) {
     return next(new ApiError(401, 'Authentication required'));
   }
 

@@ -41,7 +41,7 @@ async function findAllForUser({ userId, limit, offset, search }) {
     values
   );
 
-  const total = rows[0] ? parseInt(rows[0].total_count, 10) : 0;
+  const total = rows[0] ? Number.parseInt(rows[0].total_count, 10) : 0;
   const notes = rows.map(({ total_count, ...note }) => note);
 
   return { notes, total };

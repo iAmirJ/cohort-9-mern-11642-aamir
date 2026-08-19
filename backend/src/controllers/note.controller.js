@@ -12,8 +12,8 @@ const listNotes = asyncHandler(async (req, res) => {
   const { page, limit, search } = req.query;
   const { notes, pagination } = await noteService.listNotes({
     userId: req.user.id,
-    page: page ? parseInt(page, 10) : undefined,
-    limit: limit ? parseInt(limit, 10) : undefined,
+    page: page ? Number.parseInt(page, 10) : undefined,
+    limit: limit ? Number.parseInt(limit, 10) : undefined,
     search,
   });
   return successResponse(res, 200, 'Notes fetched successfully', { notes, pagination });
