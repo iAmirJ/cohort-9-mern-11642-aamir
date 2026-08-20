@@ -10,6 +10,12 @@ const createNoteValidator = [
   body('content')
     .optional()
     .custom(isPlainObject).withMessage('Content must be an object'),
+  body().custom((value) => {
+    if (!value.title && !value.content) {
+      throw new Error('At least one of title or content is required');
+    }
+    return true;
+  }),
 ];
 
 const updateNoteValidator = [
