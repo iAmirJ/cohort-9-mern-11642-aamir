@@ -6,7 +6,7 @@ const tokenUtils = require('../utils/token');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
 
-const REFRESH_TOKEN_EXPIRES_DAYS = parseInt(process.env.REFRESH_TOKEN_EXPIRES_DAYS, 10) || 30;
+const REFRESH_TOKEN_EXPIRES_DAYS = Number.parseInt(process.env.REFRESH_TOKEN_EXPIRES_DAYS, 10) || 30;
 
 async function registerUser({ name, email, password }) {
   const existingUser = await userRepository.findByEmail(email);

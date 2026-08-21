@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 
 function generateRefreshToken() {
   return crypto.randomBytes(32).toString('hex'); // 256 bits of randomness
