@@ -29,8 +29,12 @@ export function useNoteTags(noteId) {
   }, [tags, noteId]);
 
   const addTag = (tag) => {
-    if (!tag.trim() || tags.includes(tag.trim())) return;
-    setTags(prev => [...prev, tag.trim()]);
+    const trimmed = tag.trim();
+    if (!trimmed) return;
+    setTags(prev => {
+      if (prev.includes(trimmed)) return prev;
+      return [...prev, trimmed];
+    });
   };
 
   const removeTag = (tagToRemove) => {
