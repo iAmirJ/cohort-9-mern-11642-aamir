@@ -1,5 +1,20 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+dist-ssr/
+*.tsbuildinfo
+
+# Environment
+*.local
+.env
+.env.*.local
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -7,18 +22,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Test / Coverage
+coverage/
+.vitest/
+.tmp/
 
-# Editor directories and files
+# SonarQube scanner
+.scannerwork/
+sonar-project.properties
+sonar-project.properties.backup
+sonar-project.properties.bak
+
+# Cache
+.cache/
+.eslintcache
+.vite/
+
+# Editor / IDE
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -25,6 +25,7 @@ const Button = forwardRef(({ className, variant = 'primary', size = 'default', i
 
   return (
     <button
+      type="button"
       ref={ref}
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       disabled={isLoading || props.disabled}

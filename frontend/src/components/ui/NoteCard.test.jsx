@@ -62,4 +62,51 @@ describe('NoteCard Component', () => {
     render(<NoteCard note={mockNote} isPinned={true} />);
     expect(screen.getByTitle('Unpin note')).toBeInTheDocument();
   });
+
+  it('handles string content', () => {
+    const stringNote = { ...mockNote, content: 'String content test' };
+    render(<NoteCard note={stringNote} />);
+    expect(screen.getByText(/String content test/)).toBeInTheDocument();
+  });
+
+  it('handles object content without html', () => {
+    const objNote = { ...mockNote, content: { random: 'data' } };
+    render(<NoteCard note={objNote} />);
+    expect(screen.getByText(/{"random":"data"}/)).toBeInTheDocument();
+  });
+
+  it('renders preview from delta blocks content', () => {
+    const blocksNote = { ...mockNote, content: { blocks: [{ text: 'hello' }, { text: 'world' }] } };
+    render(<NoteCard note={blocksNote} />);
+    expect(screen.getByText(/hello world/)).toBeInTheDocument();
+  });
+
+  it('shows fallback text when note has no content', () => {
+    const emptyNote = { ...mockNote, content: null };
+    render(<NoteCard note={emptyNote} />);
+    expect(screen.getByText('No content')).toBeInTheDocument();
+  });
+
+  it('decodes HTML entities in the preview', () => {
+    const entityNote = { ...mockNote, content: { html: '<p>Tom &amp; Jerry</p>' } };
+    render(<NoteCard note={entityNote} />);
+    expect(screen.getByText(/Tom & Jerry/)).toBeInTheDocument();
+  });
+
+  it('renders tags if they exist in localStorage', () => {
+    localStorage.setItem('notes_tags', JSON.stringify({ 'note-1': ['react', 'js', 'css'] }));
+    render(<NoteCard note={mockNote} />);
+    expect(screen.getByText('#react')).toBeInTheDocument();
+    expect(screen.getByText('#js')).toBeInTheDocument();
+    expect(screen.getByText('+1')).toBeInTheDocument();
+    localStorage.clear();
+  });
+
+  it('handles archive action', () => {
+    const onArchive = vi.fn();
+    render(<NoteCard note={mockNote} onArchive={onArchive} isArchived={true} />);
+    const archiveBtn = screen.getByTitle('Unarchive');
+    fireEvent.click(archiveBtn);
+    expect(onArchive).toHaveBeenCalledWith('note-1');
+  });
 });

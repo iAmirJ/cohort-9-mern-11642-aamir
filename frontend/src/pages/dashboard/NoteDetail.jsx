@@ -32,7 +32,7 @@ export default function NoteDetail() {
       try {
         const response = await api.get(`/notes/${id}`);
         setNote(response.data.data);
-      } catch (err) {
+      } catch {
         setError('Failed to load note.');
         toast.error('Failed to load note');
       } finally {
@@ -115,6 +115,7 @@ export default function NoteDetail() {
       <div className="h-16 px-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 shrink-0">
         <div className="flex items-center gap-4">
           <button 
+            type="button"
             onClick={() => navigate('/')}
             className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
           >

@@ -1,22 +1,27 @@
-import { Pin, PinOff, Pencil, Trash2, Archive } from 'lucide-react';
+import { Pin, Pencil, Trash2, Archive } from 'lucide-react';
 import { Button } from './Button';
 
-export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDelete, onArchive, onClick }) {
-  // Extract a preview from the content blocks if it's rich text (Delta format) or just HTML
-  let preview = 'No content';
-  
-  if (note.content?.html) {
-    preview = note.content.html.replace(/<[^>]*>?/gm, '').substring(0, 100);
-  } else if (typeof note.content === 'string') {
-    preview = note.content.replace(/<[^>]*>?/gm, '').substring(0, 100);
-  } else if (note.content && note.content.blocks) {
-    preview = note.content.blocks.map(b => b.text).join(' ').substring(0, 100);
-  } else if (note.content) {
-    preview = JSON.stringify(note.content).substring(0, 100);
+function getPreview(content) {
+  if (content?.html) {
+    return content.html.replace(/<[^>]*>?/gm, '').substring(0, 100);
   }
+  if (typeof content === 'string') {
+    return content.replace(/<[^>]*>?/gm, '').substring(0, 100);
+  }
+  if (content?.blocks) {
+    return content.blocks.map(b => b.text).join(' ').substring(0, 100);
+  }
+  if (content) {
+    return JSON.stringify(content).substring(0, 100);
+  }
+  return 'No content';
+}
+
+export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDelete, onArchive, onClick }) {
+  let preview = getPreview(note.content);
 
   // Decode simple HTML entities
-  preview = preview.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  preview = preview.replaceAll('&nbsp;', ' ').replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
 
   if (preview.length === 100) preview += '...';
 
@@ -33,13 +38,14 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
     try {
       const allTags = JSON.parse(savedTags);
       if (allTags[note.id]) tags = allTags[note.id];
-    } catch(e) {}
+    } catch { /* invalid JSON in localStorage, ignore */ }
   }
 
   return (
-    <div 
+    <button 
+      type="button"
       onClick={onClick}
-      className={`relative group flex flex-col justify-between p-5 rounded-lg border bg-surface transition-all hover:shadow-sm cursor-pointer ${isPinned ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200'}`}
+      className={`relative group flex flex-col justify-between p-5 rounded-lg border bg-surface transition-all hover:shadow-sm cursor-pointer text-left w-full ${isPinned ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200'}`}
     >
       <div>
         <div className="flex items-start justify-between mb-2">
@@ -47,6 +53,7 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
             {note.title || 'Untitled'}
           </h3>
           <button 
+            type="button"
             onClick={(e) => { e.stopPropagation(); onTogglePin(note.id); }} 
             className={`absolute top-4 right-4 p-1.5 rounded-full hover:bg-gray-100 transition-colors ${isPinned ? 'text-primary' : 'text-gray-400 opacity-0 group-hover:opacity-100'}`}
             title={isPinned ? 'Unpin note' : 'Pin note'}
@@ -95,6 +102,6 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
           </Button>
         </div>
       </div>
-    </div>
+    </button>
   );
 }

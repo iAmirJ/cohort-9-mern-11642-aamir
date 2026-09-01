@@ -56,8 +56,9 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="text-left space-y-5">
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Email Address</label>
+            <label htmlFor="email" className="text-xs font-semibold text-slate-700">Email Address</label>
             <Input 
+              id="email"
               type="email" 
               placeholder="you@company.com" 
               value={email}
@@ -68,11 +69,12 @@ export default function Login() {
 
           <div className="space-y-1.5 relative">
             <div className="flex justify-between items-center">
-              <label className="text-xs font-semibold text-slate-700">Password</label>
-              <a href="#" className="text-xs font-semibold text-primary hover:underline">Forgot Password?</a>
+              <label htmlFor="password" className="text-xs font-semibold text-slate-700">Password</label>
+              <button type="button" className="text-xs font-semibold text-primary hover:underline bg-transparent border-none p-0 cursor-pointer">Forgot Password?</button>
             </div>
             <div className="relative">
               <Input 
+                id="password"
                 type={showPassword ? "text" : "password"} 
                 placeholder="••••••••" 
                 value={password}

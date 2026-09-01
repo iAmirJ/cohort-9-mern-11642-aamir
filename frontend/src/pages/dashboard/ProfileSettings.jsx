@@ -48,17 +48,17 @@ export default function ProfileSettings() {
             <h3 className="text-lg font-bold text-slate-900 mb-6">Personal Information</h3>
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">First Name</label>
-                <Input value={firstName} readOnly className="bg-gray-50 text-slate-600" />
+                <label htmlFor="firstName" className="text-sm font-semibold text-slate-700">First Name</label>
+                <Input id="firstName" value={firstName} readOnly className="bg-gray-50 text-slate-600" />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Last Name</label>
-                <Input value={lastName} readOnly className="bg-gray-50 text-slate-600" />
+                <label htmlFor="lastName" className="text-sm font-semibold text-slate-700">Last Name</label>
+                <Input id="lastName" value={lastName} readOnly className="bg-gray-50 text-slate-600" />
               </div>
             </div>
             <div className="space-y-2 mb-2">
-              <label className="text-sm font-semibold text-slate-700">Email Address</label>
-              <Input value={user?.email || ''} readOnly className="bg-gray-50 text-slate-600" />
+              <label htmlFor="email" className="text-sm font-semibold text-slate-700">Email Address</label>
+              <Input id="email" value={user?.email || ''} readOnly className="bg-gray-50 text-slate-600" />
             </div>
             <p className="text-xs text-slate-500 mb-6">Contact your admin to change your personal details.</p>
           </div>

@@ -21,9 +21,7 @@ export default function NotesList() {
   const [sortOption, setSortOption] = useState('newest');
 
   // URL Params for filtering (search, sort, filter)
-  const [searchParams, setSearchParams] = useSearchParams();
-  const searchQuery = searchParams.get('search') || '';
-  const sortBy = searchParams.get('sort') || 'newest';
+  const [searchParams] = useSearchParams();
   const filterBy = searchParams.get('filter') || 'all'; // all, pinned, archived
 
   const navigate = useNavigate();
@@ -66,7 +64,7 @@ export default function NotesList() {
       
       const response = await api.get(`/notes?${params.toString()}`);
       setNotes(response.data.data.notes || []);
-    } catch (err) {
+    } catch {
       setError('Failed to fetch notes.');
       toast.error('Failed to fetch notes');
     } finally {
@@ -84,7 +82,7 @@ export default function NotesList() {
 
     const handleCreated = (note) => {
       setNotes(prev => {
-        if (prev.find(n => n.id === note.id)) return prev;
+        if (prev.some(n => n.id === note.id)) return prev;
         return [note, ...prev];
       });
     };
@@ -145,7 +143,48 @@ export default function NotesList() {
     return [...pinnedNotes, ...unpinnedNotes];
   }, [notes, filterBy, sortOption, isPinned, isTrashed, isArchived]);
 
-  const pageTitle = filterBy === 'pinned' ? 'Pinned Notes' : filterBy === 'archived' ? 'Archived Notes' : 'All Notes';
+  let pageTitle = 'All Notes';
+  if (filterBy === 'pinned') pageTitle = 'Pinned Notes';
+  else if (filterBy === 'archived') pageTitle = 'Archived Notes';
+
+  let notesContent;
+  if (loading) {
+    notesContent = (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse border border-gray-200"></div>
+        ))}
+      </div>
+    );
+  } else if (filteredAndSortedNotes.length === 0) {
+    notesContent = (
+      <div className="text-center py-20">
+        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Search className="w-8 h-8 text-gray-400" />
+        </div>
+        <h3 className="text-lg font-semibold text-slate-800 mb-2">No notes found</h3>
+        <p className="text-slate-500">Try adjusting your search or filter to find what you're looking for.</p>
+      </div>
+    );
+  } else {
+    notesContent = (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {filteredAndSortedNotes.map((note) => (
+          <NoteCard
+            key={note.id}
+            note={note}
+            isPinned={isPinned(note.id)}
+            isArchived={isArchived(note.id)}
+            onTogglePin={() => handleTogglePin(note.id)}
+            onArchive={() => handleToggleArchive(note.id)}
+            onClick={() => navigate(`/notes/${note.id}`)}
+            onEdit={() => navigate(`/editor/${note.id}`)}
+            onDelete={handleDelete}
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -184,37 +223,7 @@ export default function NotesList() {
         
         {error && <div className="p-4 mb-6 bg-error/10 text-error rounded-lg">{error}</div>}
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse border border-gray-200"></div>
-            ))}
-          </div>
-        ) : filteredAndSortedNotes.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-2">No notes found</h3>
-            <p className="text-slate-500">Try adjusting your search or filter to find what you're looking for.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {filteredAndSortedNotes.map((note) => (
-              <NoteCard
-                key={note.id}
-                note={note}
-                isPinned={isPinned(note.id)}
-                isArchived={isArchived(note.id)}
-                onTogglePin={() => handleTogglePin(note.id)}
-                onArchive={() => handleToggleArchive(note.id)}
-                onClick={() => navigate(`/notes/${note.id}`)}
-                onEdit={() => navigate(`/editor/${note.id}`)}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
-        )}
+        {notesContent}
       </div>
     </div>
   );

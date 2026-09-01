@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FileSignature, Eye, EyeOff } from 'lucide-react';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
-import { useAuthStore } from '../../store/useAuthStore';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
@@ -100,8 +99,9 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="flex gap-4">
                 <div className="space-y-1.5 flex-1">
-                  <label className="text-xs font-semibold text-slate-700">First Name</label>
+                  <label htmlFor="firstName" className="text-xs font-semibold text-slate-700">First Name</label>
                   <Input 
+                    id="firstName"
                     name="firstName"
                     placeholder="John" 
                     value={formData.firstName}
@@ -110,8 +110,9 @@ export default function Register() {
                   />
                 </div>
                 <div className="space-y-1.5 flex-1">
-                  <label className="text-xs font-semibold text-slate-700">Last Name</label>
+                  <label htmlFor="lastName" className="text-xs font-semibold text-slate-700">Last Name</label>
                   <Input 
+                    id="lastName"
                     name="lastName"
                     placeholder="Doe" 
                     value={formData.lastName}
@@ -122,8 +123,9 @@ export default function Register() {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-slate-700">Email Address</label>
+                <label htmlFor="register-email" className="text-xs font-semibold text-slate-700">Email Address</label>
                 <Input 
+                  id="register-email"
                   type="email" 
                   name="email"
                   placeholder="john@example.com" 
@@ -134,9 +136,10 @@ export default function Register() {
               </div>
 
               <div className="space-y-1.5 relative">
-                <label className="text-xs font-semibold text-slate-700">Password</label>
+                <label htmlFor="register-password" className="text-xs font-semibold text-slate-700">Password</label>
                 <div className="relative">
                   <Input 
+                    id="register-password"
                     type={showPassword ? "text" : "password"} 
                     name="password"
                     placeholder="••••••••" 
@@ -156,9 +159,10 @@ export default function Register() {
               </div>
 
               <div className="space-y-1.5 relative">
-                <label className="text-xs font-semibold text-slate-700">Confirm Password</label>
+                <label htmlFor="confirmPassword" className="text-xs font-semibold text-slate-700">Confirm Password</label>
                 <div className="relative">
                   <Input 
+                    id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"} 
                     name="confirmPassword"
                     placeholder="••••••••" 

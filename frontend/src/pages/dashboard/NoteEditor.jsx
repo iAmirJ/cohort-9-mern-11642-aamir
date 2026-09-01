@@ -4,7 +4,6 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { useNoteTags } from '../../hooks/useNoteTags';
 import { ArrowLeft, X } from 'lucide-react';
-import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
 import api from '../../services/api';
 
@@ -40,7 +39,7 @@ export default function NoteEditor() {
           } else {
             setContent(JSON.stringify(note.content || {})); 
           }
-        } catch (err) {
+        } catch {
           setError('Failed to load note.');
           toast.error('Failed to load note');
         } finally {
@@ -127,10 +126,10 @@ export default function NoteEditor() {
       {/* Header */}
       <div className="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white shrink-0">
         <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-          <button onClick={() => navigate('/')} className="hover:bg-gray-100 p-1.5 rounded transition-colors flex items-center">
+          <button type="button" onClick={() => navigate('/')} className="hover:bg-gray-100 p-1.5 rounded transition-colors flex items-center">
             <ArrowLeft className="w-4 h-4 mr-1" />
           </button>
-          <span className="text-slate-500 cursor-pointer hover:text-slate-700" onClick={() => navigate('/')}>Dashboard</span>
+          <button type="button" className="text-slate-500 hover:text-slate-700 bg-transparent border-none p-0 cursor-pointer text-sm font-semibold" onClick={() => navigate('/')}>Dashboard</button>
           <span className="text-slate-400">/</span>
           <span>{isEditMode ? 'Edit Note' : 'New Note'}</span>
         </div>
@@ -166,7 +165,7 @@ export default function NoteEditor() {
           {tags.map(tag => (
             <span key={tag} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-semibold flex items-center gap-1.5">
               #{tag}
-              <button onClick={() => removeTag(tag)} className="hover:text-primary-dark">
+              <button type="button" onClick={() => removeTag(tag)} className="hover:text-primary-dark">
                 <X className="w-3 h-3" />
               </button>
             </span>
@@ -187,7 +186,7 @@ export default function NoteEditor() {
               />
             </form>
           ) : (
-            <button onClick={() => setIsAddingTag(true)} className="px-3 py-1.5 border border-gray-200 text-slate-500 hover:bg-gray-50 rounded text-xs font-semibold flex items-center gap-2 transition-colors">
+            <button type="button" onClick={() => setIsAddingTag(true)} className="px-3 py-1.5 border border-gray-200 text-slate-500 hover:bg-gray-50 rounded text-xs font-semibold flex items-center gap-2 transition-colors">
               + Add Tag
             </button>
           )}

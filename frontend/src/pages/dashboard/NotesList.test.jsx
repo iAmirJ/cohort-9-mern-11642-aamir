@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import NotesList from './NotesList';
@@ -62,6 +62,84 @@ describe('NotesList Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('No notes found')).toBeInTheDocument();
+    });
+  });
+
+  it('handles api fetch error', async () => {
+    api.get.mockRejectedValueOnce(new Error('Network Error'));
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<NotesList />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch notes.')).toBeInTheDocument();
+    });
+  });
+
+  it('filters and sorts notes correctly', async () => {
+    const mockNotes = [
+      { id: '1', title: 'Zebra Note', content: 'hello', createdAt: '2023-01-01T00:00:00.000Z' },
+      { id: '2', title: 'Apple Note', content: 'world', createdAt: '2023-10-01T00:00:00.000Z' },
+    ];
+    
+    api.get.mockResolvedValueOnce({ data: { data: { notes: mockNotes } } });
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<NotesList />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Zebra Note')).toBeInTheDocument();
+      expect(screen.getByText('Apple Note')).toBeInTheDocument();
+    });
+  });
+
+  it('renders only pinned notes when filter=pinned is set', async () => {
+    localStorage.setItem('notes_pinned_ids', JSON.stringify(['1']));
+    const mockNotes = [
+      { id: '1', title: 'Pinned One', content: 'x', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+      { id: '2', title: 'Normal Two', content: 'y', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    ];
+
+    api.get.mockResolvedValue({ data: { data: { notes: mockNotes } } });
+
+    render(
+      <MemoryRouter initialEntries={['/?filter=pinned']}>
+        <Routes>
+          <Route path="/" element={<NotesList />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Pinned Notes')).toBeInTheDocument();
+      expect(screen.getByText('Pinned One')).toBeInTheDocument();
+      expect(screen.queryByText('Normal Two')).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders archived page title when filter=archived is set', async () => {
+    api.get.mockResolvedValue({ data: { data: { notes: [] } } });
+
+    render(
+      <MemoryRouter initialEntries={['/?filter=archived']}>
+        <Routes>
+          <Route path="/" element={<NotesList />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Archived Notes')).toBeInTheDocument();
     });
   });
 });

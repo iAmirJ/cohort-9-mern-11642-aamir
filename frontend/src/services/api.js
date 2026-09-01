@@ -45,7 +45,7 @@ api.interceptors.response.use(
       // If the original request was to refresh token, and it failed with 401, logout
       if (originalRequest.url === '/auth/refresh') {
         useAuthStore.getState().logout();
-        return Promise.reject(error);
+        throw error;
       }
 
       if (isRefreshing) {
@@ -55,7 +55,7 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${token}`;
           return api(originalRequest);
         }).catch(err => {
-          return Promise.reject(err);
+          throw err;
         });
       }
 
@@ -81,13 +81,13 @@ api.interceptors.response.use(
       } catch (err) {
         processQueue(err, null);
         useAuthStore.getState().logout(); // Refresh failed, force logout
-        return Promise.reject(err);
+        throw err;
       } finally {
         isRefreshing = false;
       }
     }
 
-    return Promise.reject(error);
+    throw error;
   }
 );
 

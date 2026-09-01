@@ -1,24 +1,40 @@
+# Dependencies
 node_modules/
 .npm/
 
+# Environment
 .env
 .env.local
 .env.*.local
 
+# Logs
 *.log
 npm-debug.log*
 logs/
+log/
 
-.DS_Store
-Thumbs.db
+# Test / Coverage
+coverage/
+.nyc_output/
+*.lcov
+.tmp/
 
+# SonarQube scanner
+.scannerwork/
+sonar-project.properties
+sonar-project.properties.backup
+sonar-project.properties.bak
+
+# Editor / IDE
 .vscode/
 .idea/
 *.swp
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
-.nyc_output/
-
-# SonarQube & Coverage
-.scannerwork/
-coverage/
-sonar-project.properties
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini

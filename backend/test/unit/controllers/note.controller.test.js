@@ -79,7 +79,22 @@ describe('GET /api/notes', () => {
 
     expect(res.status).to.equal(200);
     expect(res.body.data.notes).to.have.lengthOf(1);
-    expect(res.body.data.pagination.total).to.equal(1);
+    expect(res.body.data.pagination.page).to.equal(1);
+  });
+
+  it('passes page and limit query params to the service', async () => {
+    const token = authAs('u1');
+    const serviceStub = sinon.stub(noteService, 'listNotes').resolves({
+      notes: [],
+      pagination: { page: 2, limit: 5, total: 0, totalPages: 0 },
+    });
+
+    await request(app).get('/api/notes?page=2&limit=5').set('Authorization', token);
+
+    expect(serviceStub.firstCall.args[0]).to.deep.include({
+      page: 2,
+      limit: 5
+    });
   });
 
   it('returns 422 when limit exceeds the max of 100', async () => {

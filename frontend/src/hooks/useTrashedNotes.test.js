@@ -51,12 +51,12 @@ describe('useTrashedNotes hook', () => {
       result.current.moveToTrash('note-2');
     });
     
-    expect(result.current.trashedIds.length).toBe(2);
+    expect(result.current.trashedIds).toHaveLength(2);
 
     act(() => {
       result.current.emptyTrash();
     });
 
-    expect(result.current.trashedIds.length).toBe(0);
+    expect(result.current.trashedIds).toHaveLength(0);
   });
 });

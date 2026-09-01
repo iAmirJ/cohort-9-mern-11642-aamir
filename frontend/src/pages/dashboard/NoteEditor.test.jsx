@@ -88,4 +88,86 @@ describe('NoteEditor Component', () => {
       expect(screen.getByDisplayValue('<p>Existing content</p>')).toBeInTheDocument();
     });
   });
+
+  it('shows error if saving with empty title and content', async () => {
+    render(
+      <MemoryRouter initialEntries={['/editor']}>
+        <Routes>
+          <Route path="/editor" element={<NoteEditor />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const saveButton = screen.getByRole('button', { name: /save note/i });
+    fireEvent.click(saveButton);
+
+    expect(screen.getByText('Title or content is required')).toBeInTheDocument();
+    expect(api.post).not.toHaveBeenCalled();
+  });
+
+  it('handles api fetch error gracefully', async () => {
+    api.get.mockRejectedValueOnce(new Error('Network error'));
+
+    render(
+      <MemoryRouter initialEntries={['/editor/note-error']}>
+        <Routes>
+          <Route path="/editor/:id" element={<NoteEditor />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to load note.')).toBeInTheDocument();
+    });
+  });
+
+  it('handles api save error gracefully', async () => {
+    api.post.mockRejectedValueOnce({ response: { data: { message: 'Save failed' } } });
+
+    render(
+      <MemoryRouter initialEntries={['/editor']}>
+        <Routes>
+          <Route path="/editor" element={<NoteEditor />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    const titleInput = screen.getByPlaceholderText('Note Title');
+    fireEvent.change(titleInput, { target: { value: 'Failing Note' } });
+
+    const saveButton = screen.getByRole('button', { name: /save note/i });
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('Save failed')).toBeInTheDocument();
+    });
+  });
+
+  it('allows adding and removing a tag', async () => {
+    render(
+      <MemoryRouter initialEntries={['/editor']}>
+        <Routes>
+          <Route path="/editor" element={<NoteEditor />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Click Add Tag
+    const addTagBtn = screen.getByText('+ Add Tag');
+    fireEvent.click(addTagBtn);
+
+    // Type and submit tag
+    const tagInput = screen.getByPlaceholderText('tag name...');
+    fireEvent.change(tagInput, { target: { value: 'javascript' } });
+    fireEvent.submit(tagInput.closest('form'));
+
+    // Tag should be present
+    expect(screen.getByText('#javascript')).toBeInTheDocument();
+
+    // Click X to remove
+    const removeBtn = screen.getByText('#javascript').querySelector('button');
+    fireEvent.click(removeBtn);
+
+    expect(screen.queryByText('#javascript')).not.toBeInTheDocument();
+  });
 });
