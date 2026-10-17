@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #004ac6;
+  --color-primary-container: #2563eb;
+  --color-on-primary-container: #eeefff;
+  
+  --color-surface: #ffffff;
+  --color-surface-dim: #f7f9fb;
+  --color-surface-container: #eceef0;
+  
+  --color-error: #ba1a1a;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  --radius-sm: 0.125rem;
+  --radius-DEFAULT: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+}
+
+@layer base {
+  body {
+    @apply bg-surface-dim text-slate-900 font-sans antialiased;
+  }
+}
+
+@layer utilities {
+  .rich-text h1 { @apply text-3xl font-bold mt-6 mb-4; }
+  .rich-text h2 { @apply text-2xl font-bold mt-5 mb-3; }
+  .rich-text h3 { @apply text-xl font-bold mt-4 mb-2; }
+  .rich-text p { @apply mb-2; }
+  .rich-text ul { @apply list-disc list-outside ml-6 mb-4; }
+  .rich-text ol { @apply list-decimal list-outside ml-6 mb-4; }
+  .rich-text li { @apply mb-1; }
+  .rich-text strong { @apply font-bold; }
+  .rich-text em { @apply italic; }
+  .rich-text u { @apply underline; }
+  .rich-text s { @apply line-through; }
+  .rich-text blockquote { @apply border-l-4 border-gray-300 pl-4 py-1 italic text-slate-600 bg-gray-50 mb-4; }
+  .rich-text pre { @apply bg-slate-800 text-slate-50 p-4 rounded-lg overflow-x-auto mb-4; }
+  .rich-text code { @apply bg-gray-100 text-pink-600 px-1 py-0.5 rounded text-sm font-mono; }
+  .rich-text pre code { @apply bg-transparent text-inherit p-0; }
+  .rich-text a { @apply text-primary underline hover:text-primary-container transition-colors; }
+}
