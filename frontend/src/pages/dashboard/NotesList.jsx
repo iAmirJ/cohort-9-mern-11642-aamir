@@ -150,7 +150,7 @@ export default function NotesList() {
   let notesContent;
   if (loading) {
     notesContent = (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-48 bg-gray-100 rounded-lg animate-pulse border border-gray-200"></div>
         ))}
@@ -168,7 +168,7 @@ export default function NotesList() {
     );
   } else {
     notesContent = (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {filteredAndSortedNotes.map((note) => (
           <NoteCard
             key={note.id}
@@ -189,7 +189,7 @@ export default function NotesList() {
   return (
     <div className="flex flex-col h-full">
       {/* Search and Sort Toolbar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="relative w-full max-w-md">
           <Search className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
           <Input 
@@ -200,7 +200,7 @@ export default function NotesList() {
           />
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between sm:justify-start gap-2">
           <span className="text-sm font-medium text-slate-500">Sort by:</span>
           <div className="relative">
             <select

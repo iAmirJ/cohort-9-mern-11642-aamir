@@ -114,16 +114,20 @@ export function DashboardLayout() {
             <button 
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 rounded-lg text-slate-500 hover:bg-gray-100 md:hidden"
+              className="p-2 -ml-2 rounded-lg text-slate-600 hover:bg-gray-100 md:hidden touch-manipulation"
+              aria-label="Open menu"
             >
               <Menu className="w-6 h-6" />
             </button>
+            <div className="flex items-center gap-2 text-primary font-bold text-lg md:hidden">
+              <FileSignature className="w-5 h-5" /> Nestly Notes
+            </div>
             <div className="flex-1 max-w-2xl hidden sm:block">
               {/* Search handled in NotesList */}
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button type="button" onClick={() => navigate('/profile')} className="flex items-center gap-2 hover:bg-gray-50 p-1.5 pr-3 rounded-full transition-colors border border-transparent hover:border-gray-200">
+            <button type="button" onClick={() => navigate('/profile')} className="flex items-center gap-2 hover:bg-gray-50 p-1.5 pr-3 rounded-full transition-colors border border-transparent hover:border-gray-200 touch-manipulation">
               <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary text-sm font-bold">
                 {user?.name?.charAt(0).toUpperCase()}
               </div>

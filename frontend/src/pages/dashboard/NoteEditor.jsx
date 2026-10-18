@@ -124,28 +124,49 @@ export default function NoteEditor() {
   return (
     <div className="max-w-4xl mx-auto h-full flex flex-col bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white shrink-0">
-        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-          <button type="button" onClick={() => navigate('/')} className="hover:bg-gray-100 p-1.5 rounded transition-colors flex items-center">
-            <ArrowLeft className="w-4 h-4 mr-1" />
+      <div className="min-h-14 sm:h-16 border-b border-gray-200 flex flex-wrap sm:flex-nowrap items-center justify-between px-3 sm:px-6 py-2.5 sm:py-0 gap-2.5 bg-white shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-sm font-semibold text-slate-700 min-w-0">
+          <button 
+            type="button" 
+            onClick={() => navigate('/')} 
+            className="hover:bg-gray-100 p-1.5 rounded transition-colors flex items-center text-slate-600 hover:text-slate-900 shrink-0 touch-manipulation"
+            aria-label="Back to Dashboard"
+          >
+            <ArrowLeft className="w-4 h-4" />
           </button>
-          <button type="button" className="text-slate-500 hover:text-slate-700 bg-transparent border-none p-0 cursor-pointer text-sm font-semibold" onClick={() => navigate('/')}>Dashboard</button>
+          <button 
+            type="button" 
+            className="text-slate-500 hover:text-slate-700 bg-transparent border-none p-0 cursor-pointer text-xs sm:text-sm font-semibold truncate" 
+            onClick={() => navigate('/')}
+          >
+            Dashboard
+          </button>
           <span className="text-slate-400">/</span>
-          <span>{isEditMode ? 'Edit Note' : 'New Note'}</span>
+          <span className="truncate text-xs sm:text-sm text-slate-900">{isEditMode ? 'Edit Note' : 'New Note'}</span>
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xs font-medium text-slate-500 hidden sm:inline-block">Last saved: {isEditMode ? 'Previously' : 'Just now'}</span>
-          <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+          <span className="text-xs font-medium text-slate-500 hidden md:inline-block">Last saved: {isEditMode ? 'Previously' : 'Just now'}</span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => navigate('/')}
+            className="h-8 px-3 text-xs shrink-0 self-center"
+          >
             Cancel
           </Button>
-          <Button size="sm" onClick={handleSave} isLoading={saving}>
+          <Button 
+            size="sm" 
+            onClick={handleSave} 
+            isLoading={saving}
+            className="h-8 px-3.5 text-xs sm:text-sm shrink-0 self-center shadow-sm"
+          >
             Save Note
           </Button>
         </div>
       </div>
 
       {/* Editor Body */}
-      <div className="flex-1 flex flex-col overflow-hidden p-6 md:p-10 bg-white">
+      <div className="flex-1 flex flex-col overflow-hidden p-4 sm:p-6 md:p-10 bg-white">
         {error && <div className="mb-4 p-3 bg-error/10 text-error text-sm rounded border border-error/20">{error}</div>}
         
         <input
@@ -153,17 +174,17 @@ export default function NoteEditor() {
           placeholder="Note Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-4xl font-bold text-slate-900 placeholder:text-slate-300 border-none focus:outline-none mb-4 bg-transparent"
+          className="w-full text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 placeholder:text-slate-300 border-none focus:outline-none mb-4 bg-transparent"
         />
 
         {/* Tags */}
-        <div className="flex items-center gap-2 mb-8 flex-wrap">
-          <div className="px-3 py-1.5 border border-gray-200 text-slate-500 rounded text-xs font-semibold flex items-center gap-2 bg-gray-50">
+        <div className="flex items-center gap-2 mb-6 flex-wrap">
+          <div className="px-3 py-1.5 border border-gray-200 text-slate-500 rounded text-xs font-semibold flex items-center gap-2 bg-gray-50 shrink-0">
             📅 {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
           </div>
           
           {tags.map(tag => (
-            <span key={tag} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-semibold flex items-center gap-1.5">
+            <span key={tag} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded text-xs font-semibold flex items-center gap-1.5 shrink-0">
               #{tag}
               <button type="button" onClick={() => removeTag(tag)} className="hover:text-primary-dark">
                 <X className="w-3 h-3" />
@@ -172,7 +193,7 @@ export default function NoteEditor() {
           ))}
 
           {isAddingTag ? (
-            <form onSubmit={handleTagSubmit} className="inline-flex">
+            <form onSubmit={handleTagSubmit} className="inline-flex shrink-0">
               <input
                 type="text"
                 value={tagInput}
@@ -186,7 +207,7 @@ export default function NoteEditor() {
               />
             </form>
           ) : (
-            <button type="button" onClick={() => setIsAddingTag(true)} className="px-3 py-1.5 border border-gray-200 text-slate-500 hover:bg-gray-50 rounded text-xs font-semibold flex items-center gap-2 transition-colors">
+            <button type="button" onClick={() => setIsAddingTag(true)} className="px-3 py-1.5 border border-gray-200 text-slate-500 hover:bg-gray-50 rounded text-xs font-semibold flex items-center gap-2 transition-colors shrink-0">
               + Add Tag
             </button>
           )}
@@ -194,9 +215,30 @@ export default function NoteEditor() {
         
         <div className="flex-1 overflow-auto editor-container">
           <style dangerouslySetInnerHTML={{__html: `
-            .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #f1f5f9; padding: 12px 0; margin-bottom: 16px; }
+            .ql-toolbar.ql-snow { 
+              border: none; 
+              border-bottom: 1px solid #f1f5f9; 
+              padding: 8px 0; 
+              margin-bottom: 16px; 
+              display: flex;
+              flex-wrap: wrap;
+              gap: 2px;
+            }
+            .ql-snow .ql-formats {
+              margin-right: 6px !important;
+              margin-bottom: 4px !important;
+            }
+            .ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button {
+              width: 28px;
+              height: 28px;
+              padding: 3px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              flex-shrink: 0;
+            }
             .ql-container.ql-snow { border: none; font-family: inherit; font-size: 16px; }
-            .ql-editor { padding: 0; min-height: 300px; color: #475569; line-height: 1.6; }
+            .ql-editor { padding: 0; min-height: 250px; color: #475569; line-height: 1.6; }
             .ql-editor.ql-blank::before { left: 0; font-style: normal; color: #cbd5e1; }
           `}} />
           <ReactQuill
