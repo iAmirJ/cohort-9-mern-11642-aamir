@@ -34,6 +34,10 @@ jobs:
             frontend/package-lock.json
 
       - name: Test Backend
+        env:
+          JWT_ACCESS_SECRET: test_jwt_access_secret_key_for_testing_purposes_only_12345
+          JWT_REFRESH_SECRET: test_jwt_refresh_secret_key_for_testing_purposes_only_12345
+          NODE_ENV: test
         working-directory: backend
         run: |
           npm ci
