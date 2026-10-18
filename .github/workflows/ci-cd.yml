@@ -1,0 +1,80 @@
+name: Production CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: # allows manual runs from the Actions tab
+
+permissions:
+  contents: read
+
+# prevents parallel deploys from racing each other
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  # stage 1: automated testing CI
+  test:
+    name: Run Automated Tests and build verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Test Backend
+        working-directory: backend
+        run: |
+          npm ci
+          npm test
+
+      - name: Build Frontend (verify it compiles)
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+
+  # Stage 2 Automated Deployment CD
+  deploy:
+    name: Deploy to AWS (Multi VM)
+    needs: test # if test job fails, deployment will not run
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: SSH to VM 1 (frontend) and deploy both tiers
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "Deploying frontend on VM 1 (Public)"
+            cd ~/cohort-9-mern-11642-aamir/frontend
+            git pull origin main
+            npm ci
+            npm run build
+            sudo rm -rf /var/www/html/*
+            sudo cp -r dist/* /var/www/html/
+            sudo systemctl restart nginx
+            echo "Frontend deployed successfully!"
+
+            echo "Deploying backend on VM 2 (Private)"
+            ssh -i ~/.ssh/nestly-server-key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST_B }} << 'EOF'
+              cd ~/cohort-9-mern-11642-aamir/backend
+              git pull origin main
+              docker compose up -d --build
+            EOF
+            echo "Backend deployed successfully!"
