@@ -112,36 +112,36 @@ export default function NoteDetail() {
   return (
     <div className="flex flex-col h-full max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* Header Bar */}
-      <div className="h-16 px-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 shrink-0">
-        <div className="flex items-center gap-4">
+      <div className="min-h-14 sm:h-16 px-3 sm:px-6 py-2.5 sm:py-0 border-b border-gray-100 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 bg-gray-50/50 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <button 
             type="button"
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors shrink-0 touch-manipulation"
           >
-            <ArrowLeft className="w-4 h-4" /> Back to Notes
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden xs:inline">Back to Notes</span><span className="xs:hidden">Back</span>
           </button>
           <div className="h-4 w-px bg-gray-200 hidden sm:block"></div>
-          <span className="text-xs text-slate-400 hidden sm:block">
+          <span className="text-xs text-slate-400 hidden sm:block truncate">
             Created {createdDate} • Last edited {updatedDate}
           </span>
         </div>
         
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" onClick={handleTogglePin} className={isNotePinned ? 'border-primary text-primary bg-primary/5' : ''}>
-            <Pin className={`w-4 h-4 mr-2 ${isNotePinned ? 'fill-current' : ''}`} /> {isNotePinned ? 'Pinned' : 'Pin'}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 ml-auto">
+          <Button variant="outline" size="sm" onClick={handleTogglePin} className={`h-8 px-2.5 sm:px-3 text-xs shrink-0 ${isNotePinned ? 'border-primary text-primary bg-primary/5' : ''}`}>
+            <Pin className={`w-3.5 h-3.5 mr-1 sm:mr-1.5 ${isNotePinned ? 'fill-current' : ''}`} /> {isNotePinned ? 'Pinned' : 'Pin'}
           </Button>
-          <Button variant="outline" size="sm" onClick={handleDelete} className="text-error hover:bg-error/5 hover:border-error/30 border-gray-200">
-            <Trash2 className="w-4 h-4 mr-2" /> Delete
+          <Button variant="outline" size="sm" onClick={handleDelete} className="h-8 px-2.5 sm:px-3 text-xs shrink-0 text-error hover:bg-error/5 hover:border-error/30 border-gray-200">
+            <Trash2 className="w-3.5 h-3.5 mr-1 sm:mr-1.5" /> Delete
           </Button>
-          <Button size="sm" onClick={() => navigate(`/editor/${note.id}`)}>
-            <Pencil className="w-4 h-4 mr-2" /> Edit Note
+          <Button size="sm" onClick={() => navigate(`/editor/${note.id}`)} className="h-8 px-3 text-xs shrink-0 shadow-sm">
+            <Pencil className="w-3.5 h-3.5 mr-1 sm:mr-1.5" /> Edit
           </Button>
         </div>
       </div>
 
       {/* Note Content */}
-      <div className="flex-1 overflow-auto p-10 md:px-16 md:py-12">
+      <div className="flex-1 overflow-auto p-4 sm:p-8 md:px-16 md:py-12">
         {/* Tags */}
         {tags.length > 0 && (
           <div className="flex gap-2 mb-6 flex-wrap">
@@ -153,7 +153,7 @@ export default function NoteDetail() {
           </div>
         )}
 
-        <h1 className="text-4xl font-bold text-slate-900 mb-8 leading-tight">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-6 sm:mb-8 leading-tight">
           {note.title || 'Untitled Note'}
         </h1>
         

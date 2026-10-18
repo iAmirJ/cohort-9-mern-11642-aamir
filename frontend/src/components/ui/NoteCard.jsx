@@ -42,9 +42,16 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
   }
 
   return (
-    <button 
-      type="button"
+    <div 
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       className={`relative group flex flex-col justify-between p-5 rounded-lg border bg-surface transition-all hover:shadow-sm cursor-pointer text-left w-full ${isPinned ? 'border-primary ring-1 ring-primary/20' : 'border-gray-200'}`}
     >
       <div>
@@ -54,9 +61,12 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
           </h3>
           <button 
             type="button"
-            onClick={(e) => { e.stopPropagation(); onTogglePin(note.id); }} 
-            className={`absolute top-4 right-4 p-1.5 rounded-full hover:bg-gray-100 transition-colors ${isPinned ? 'text-primary' : 'text-gray-400 opacity-0 group-hover:opacity-100'}`}
+            onClick={(e) => { e.stopPropagation(); onTogglePin?.(note.id); }} 
+            className={`absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10 touch-manipulation ${
+              isPinned ? 'text-primary opacity-100' : 'text-gray-400 opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
+            }`}
             title={isPinned ? 'Unpin note' : 'Pin note'}
+            aria-label={isPinned ? 'Unpin note' : 'Pin note'}
           >
             {isPinned ? <Pin className="w-4 h-4 fill-current" /> : <Pin className="w-4 h-4" />}
           </button>
@@ -87,21 +97,42 @@ export function NoteCard({ note, isPinned, isArchived, onTogglePin, onEdit, onDe
         )}
       </div>
 
-      <div className="flex items-center justify-end mt-4 pt-4 border-t border-gray-100">
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-primary" onClick={(e) => { e.stopPropagation(); onEdit(note); }} title="Edit">
+      <div className="flex items-center justify-end mt-4 pt-3 border-t border-gray-100">
+        <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-slate-500 hover:text-primary hover:bg-primary/10 touch-manipulation" 
+            onClick={(e) => { e.stopPropagation(); onEdit?.(note); }} 
+            title="Edit"
+            aria-label="Edit note"
+          >
             <Pencil className="w-4 h-4" />
           </Button>
           {onArchive && (
-            <Button variant="ghost" size="icon" className={`h-8 w-8 hover:text-orange-500 ${isArchived ? 'text-orange-500' : 'text-slate-500'}`} onClick={(e) => { e.stopPropagation(); onArchive(note.id); }} title={isArchived ? "Unarchive" : "Archive"}>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className={`h-8 w-8 hover:bg-orange-50 touch-manipulation ${isArchived ? 'text-orange-500' : 'text-slate-500 hover:text-orange-500'}`} 
+              onClick={(e) => { e.stopPropagation(); onArchive?.(note.id); }} 
+              title={isArchived ? "Unarchive" : "Archive"}
+              aria-label={isArchived ? "Unarchive note" : "Archive note"}
+            >
               <Archive className="w-4 h-4" />
             </Button>
           )}
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-error" onClick={(e) => { e.stopPropagation(); onDelete(note.id); }} title="Move to Trash">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 text-slate-500 hover:text-error hover:bg-error/10 touch-manipulation" 
+            onClick={(e) => { e.stopPropagation(); onDelete?.(note.id); }} 
+            title="Move to Trash"
+            aria-label="Move note to trash"
+          >
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
       </div>
-    </button>
+    </div>
   );
 }

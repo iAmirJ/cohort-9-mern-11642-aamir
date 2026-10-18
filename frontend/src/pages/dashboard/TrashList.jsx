@@ -97,7 +97,7 @@ export default function TrashList() {
     trashContent = <div className="text-slate-500 mt-10">Your trash is empty.</div>;
   } else {
     trashContent = (
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
         {notes.map((note) => (
           <TrashItem
             key={note.id}
@@ -112,12 +112,12 @@ export default function TrashList() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 mb-1">Trash</h1>
           <p className="text-slate-500 text-sm">Notes in trash are kept safely until you permanently delete them.</p>
         </div>
-        <Button variant="danger" className="bg-error/10 text-error hover:bg-error/20" onClick={handleEmptyTrash} disabled={notes.length === 0}>
+        <Button variant="danger" className="bg-error/10 text-error hover:bg-error/20 shrink-0 self-start sm:self-auto" onClick={handleEmptyTrash} disabled={notes.length === 0}>
           <Trash2 className="w-4 h-4 mr-2" /> Empty Trash
         </Button>
       </div>
